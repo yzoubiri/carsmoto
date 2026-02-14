@@ -3,49 +3,96 @@
 <head>
   <meta charset="UTF-8">
   <title>Auto & Moto Passion</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Import Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 0; padding: 0;
+      margin: 0;
+      font-family: 'Montserrat', 'Roboto', sans-serif;
       background-color: #f4f4f4;
+      color: #333;
     }
     header {
-      background: #333;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: #000;
       color: #fff;
-      padding: 20px;
-      text-align: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      z-index: 1000;
     }
-    nav {
-      background: #555;
-      padding: 10px;
-      text-align: center;
+    header h1 {
+      margin: 0;
+      color: #e10600;
     }
     nav a {
       color: #fff;
       margin: 0 15px;
       text-decoration: none;
+      font-weight: bold;
+    }
+    .hero {
+      height: 100vh;
+      background: url('https://via.placeholder.com/1600x900?text=Voiture+Sportive+%2B+Moto+de+Course') center/cover no-repeat;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      text-shadow: 2px 2px 5px #000;
+    }
+    .hero h2 {
+      font-size: 3em;
+      background: rgba(0,0,0,0.5);
+      padding: 20px;
+      border-radius: 10px;
     }
     section {
-      padding: 20px;
+      padding: 80px 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+    h2 {
+      text-align: center;
+      color: #e10600;
+      margin-bottom: 40px;
+    }
+    .about {
+      text-align: center;
+      font-size: 1.2em;
+      line-height: 1.6;
     }
     .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .gallery img {
+      width: 100%;
+      border-radius: 10px;
+      transition: transform 0.3s;
+    }
+    .gallery img:hover {
+      transform: scale(1.05);
+    }
+    .services {
       display: flex;
+      flex-wrap: wrap;
       gap: 20px;
       justify-content: center;
     }
-    .gallery img {
-      width: 250px;
-      border-radius: 8px;
-    }
-    footer {
-      background: #333;
-      color: #fff;
+    .service {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 20px;
+      flex: 1 1 250px;
       text-align: center;
-      padding: 15px;
-      margin-top: 20px;
     }
     form {
-      max-width: 400px;
+      max-width: 500px;
       margin: auto;
       display: flex;
       flex-direction: column;
@@ -57,12 +104,24 @@
       border-radius: 5px;
     }
     form button {
-      background: #333;
+      background: #e10600;
       color: #fff;
-      padding: 10px;
+      padding: 12px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      font-weight: bold;
+    }
+    footer {
+      background: #000;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+    footer a {
+      color: #e10600;
+      margin: 0 10px;
+      text-decoration: none;
     }
   </style>
 </head>
@@ -70,26 +129,43 @@
 
   <header>
     <h1>Auto & Moto Passion</h1>
-    <p>Bienvenue dans l’univers des véhicules qui font rêver</p>
+    <nav>
+      <a href="#about">À propos</a>
+      <a href="#gallery">Galerie</a>
+      <a href="#services">Services</a>
+      <a href="#contact">Contact</a>
+    </nav>
   </header>
 
-  <nav>
-    <a href="#accueil">Accueil</a>
-    <a href="#galerie">Galerie</a>
-    <a href="#contact">Contact</a>
-  </nav>
-
-  <section id="accueil">
-    <h2>À propos</h2>
-    <p>Nous partageons notre passion pour les voitures et les motos, des modèles classiques aux plus modernes.</p>
+  <section class="hero">
+    <h2>Bienvenue dans l’univers des voitures et motos</h2>
   </section>
 
-  <section id="galerie">
+  <section id="about">
+    <h2>À propos</h2>
+    <p class="about">
+      Auto & Moto Passion est né de l’amour pour la vitesse, le design et la mécanique. 
+      Nous partageons notre passion pour les véhicules qui font vibrer, des classiques intemporels aux sportives modernes.
+    </p>
+  </section>
+
+  <section id="gallery">
     <h2>Galerie</h2>
     <div class="gallery">
-      <img src="https://via.placeholder.com/250x150?text=Voiture" alt="Voiture">
-      <img src="https://via.placeholder.com/250x150?text=Moto" alt="Moto">
-      <img src="https://via.placeholder.com/250x150?text=Sportive" alt="Sportive">
+      <img src="https://via.placeholder.com/400x250?text=Voiture+Classique" alt="Voiture Classique">
+      <img src="https://via.placeholder.com/400x250?text=Voiture+Sportive" alt="Voiture Sportive">
+      <img src="https://via.placeholder.com/400x250?text=Moto+Custom" alt="Moto Custom">
+      <img src="https://via.placeholder.com/400x250?text=Moto+Course" alt="Moto de Course">
+    </div>
+  </section>
+
+  <section id="services">
+    <h2>Nos Services</h2>
+    <div class="services">
+      <div class="service"><h3>Vente de véhicules</h3><p>Découvrez notre sélection exclusive de voitures et motos.</p></div>
+      <div class="service"><h3>Conseils personnalisés</h3><p>Un accompagnement sur mesure pour choisir le véhicule idéal.</p></div>
+      <div class="service"><h3>Entretien</h3><p>Services d’entretien et réparation pour garder vos véhicules au top.</p></div>
+      <div class="service"><h3>Accessoires</h3><p>Équipez vos voitures et motos avec des accessoires premium.</p></div>
     </div>
   </section>
 
@@ -98,13 +174,15 @@
     <form>
       <input type="text" placeholder="Votre nom" required>
       <input type="email" placeholder="Votre email" required>
-      <textarea rows="4" placeholder="Votre message"></textarea>
+      <textarea rows="5" placeholder="Votre message"></textarea>
       <button type="submit">Envoyer</button>
     </form>
   </section>
 
   <footer>
-    <p>&copy; 2026 Auto & Moto Passion</p>
+    <p>&copy; 2026 Auto & Moto Passion | Suivez-nous :
+      <a href="#">Facebook</a> | <a href="#">Instagram</a> | <a href="#">YouTube</a>
+    </p>
   </footer>
 
 </body>
