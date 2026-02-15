@@ -12,6 +12,12 @@
     .card { background: #fff; border-radius: 10px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
     .card h3 { margin: 0; color: #e10600; }
     .card p { margin: 5px 0; }
+    form { max-width: 400px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+    form input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+    form button { background: #e10600; color: #fff; padding: 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    .notification { max-width: 400px; margin: 10px auto; padding: 15px; border-radius: 5px; text-align: center; font-weight: bold; }
+    .success { background: #4CAF50; color: #fff; }
+    .error { background: #f44336; color: #fff; }
   </style>
 </head>
 <body>
@@ -27,18 +33,27 @@
   </div>
 </section>
 
+<section>
+  <h2 style="text-align:center;color:#e10600;">Ajouter une voiture</h2>
+  <form id="voitureForm">
+    <input type="text" id="marque" placeholder="Marque" required>
+    <input type="text" id="modele" placeholder="Modèle" required>
+    <input type="number" id="annee" placeholder="Année" required>
+    <button type="submit">Ajouter</button>
+  </form>
+  <div id="notification"></div>
+</section>
+
 <script>
-  // URL de ton backend Azure
   const API_URL = "https://carsmoto-bo-c6ahhwejctesb0b7.westeurope-01.azurewebsites.net/api/voitures";
 
-  // Fonction pour charger les voitures
   async function loadVoitures() {
     try {
       const response = await fetch(API_URL);
       const voitures = await response.json();
 
       const gallery = document.getElementById("gallery");
-      gallery.innerHTML = ""; // Nettoyer avant d'ajouter
+      gallery.innerHTML = "";
 
       voitures.forEach(v => {
         const card = document.createElement("div");
@@ -51,11 +66,46 @@
         gallery.appendChild(card);
       });
     } catch (error) {
-      console.error("Erreur lors du chargement des voitures :", error);
+      showNotification("Erreur lors du chargement des voitures", "error");
     }
   }
 
-  // Charger au démarrage
+  function showNotification(message, type) {
+    const notif = document.getElementById("notification");
+    notif.className = `notification ${type}`;
+    notif.textContent = message;
+    setTimeout(() => {
+      notif.textContent = "";
+      notif.className = "";
+    }, 4000); // disparaît après 4 secondes
+  }
+
+  document.getElementById("voitureForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const marque = document.getElementById("marque").value;
+    const modele = document.getElementById("modele").value;
+    const annee = document.getElementById("annee").value;
+
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ marque, modele, annee })
+      });
+
+      if (response.ok) {
+        showNotification("Voiture ajoutée avec succès ✅", "success");
+        loadVoitures();
+        document.getElementById("voitureForm").reset();
+      } else {
+        showNotification("Erreur lors de l'ajout ❌", "error");
+      }
+    } catch (error) {
+      showNotification("Erreur réseau ❌", "error");
+    }
+  });
+
   loadVoitures();
 </script>
 
