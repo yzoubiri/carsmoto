@@ -20,6 +20,12 @@
     .notification { max-width: 400px; margin: 10px auto; padding: 15px; border-radius: 5px; text-align: center; font-weight: bold; }
     .success { background: #4CAF50; color: #fff; }
     .error { background: #f44336; color: #fff; }
+    /* Styles pour le popup */
+    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto;
+             background-color: rgba(0,0,0,0.5); }
+    .modal-content { background-color: #fff; margin: 10% auto; padding: 20px; border-radius: 10px; width: 90%; max-width: 400px; }
+    .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+    .close:hover { color: #000; }
   </style>
 </head>
 <body>
@@ -30,13 +36,11 @@
 
 <section>
   <h2 style="text-align:center;color:#e10600;">Nos Voitures</h2>
-  <div id="gallery" class="gallery">
-    <!-- Les voitures seront injectées ici -->
-  </div>
+  <div id="gallery" class="gallery"></div>
 </section>
 
 <section>
-    <div id="notification"></div>
+   <div id="notification"></div>
   <h2 style="text-align:center;color:#e10600;">Ajouter une voiture</h2>
   <form id="voitureForm">
     <input type="text" id="marque" placeholder="Marque" required>
@@ -44,11 +48,24 @@
     <input type="number" id="annee" placeholder="Année" required>
     <button type="submit">Ajouter</button>
   </form>
-
+ 
 </section>
+
+<!-- Popup modal pour modification -->
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2>Modifier la voiture</h2>
+    <input type="text" id="edit-marque" placeholder="Marque">
+    <input type="text" id="edit-modele" placeholder="Modèle">
+    <input type="number" id="edit-annee" placeholder="Année">
+    <button onclick="saveEdit()">Enregistrer</button>
+  </div>
+</div>
 
 <script>
   const API_URL = "https://carsmoto-bo-c6ahhwejctesb0b7.westeurope-01.azurewebsites.net/api/voitures";
+  let currentEditId = null;
 
   async function loadVoitures() {
     try {
@@ -66,13 +83,7 @@
           <p>Année : ${v.annee}</p>
           <p>ID : ${v.id}</p>
           <button onclick="deleteVoiture(${v.id})">Supprimer</button>
-          <button onclick="showEditForm(${v.id}, '${v.marque}', '${v.modele}', ${v.annee})">Modifier</button>
-          <div id="edit-${v.id}" style="display:none; margin-top:10px;">
-            <input type="text" id="edit-marque-${v.id}" value="${v.marque}">
-            <input type="text" id="edit-modele-${v.id}" value="${v.modele}">
-            <input type="number" id="edit-annee-${v.id}" value="${v.annee}">
-            <button onclick="updateVoiture(${v.id})">Enregistrer</button>
-          </div>
+          <button onclick="openModal(${v.id}, '${v.marque}', '${v.modele}', ${v.annee})">Modifier</button>
         `;
         gallery.appendChild(card);
       });
@@ -81,17 +92,25 @@
     }
   }
 
-  function showEditForm(id) {
-    document.getElementById(`edit-${id}`).style.display = "block";
+  function openModal(id, marque, modele, annee) {
+    currentEditId = id;
+    document.getElementById("edit-marque").value = marque;
+    document.getElementById("edit-modele").value = modele;
+    document.getElementById("edit-annee").value = annee;
+    document.getElementById("editModal").style.display = "block";
   }
 
-  async function updateVoiture(id) {
-    const marque = document.getElementById(`edit-marque-${id}`).value;
-    const modele = document.getElementById(`edit-modele-${id}`).value;
-    const annee = document.getElementById(`edit-annee-${id}`).value;
+  function closeModal() {
+    document.getElementById("editModal").style.display = "none";
+  }
+
+  async function saveEdit() {
+    const marque = document.getElementById("edit-marque").value;
+    const modele = document.getElementById("edit-modele").value;
+    const annee = document.getElementById("edit-annee").value;
 
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
+      const response = await fetch(`${API_URL}/${currentEditId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ marque, modele, annee })
@@ -99,6 +118,7 @@
 
       if (response.ok) {
         showNotification("Voiture mise à jour ✅", "success");
+        closeModal();
         loadVoitures();
       } else {
         showNotification("Erreur lors de la mise à jour ❌", "error");
@@ -157,6 +177,14 @@
       notif.textContent = "";
       notif.className = "";
     }, 4000);
+  }
+
+  // Fermer le modal si on clique en dehors
+  window.onclick = function(event) {
+    const modal = document.getElementById("editModal");
+    if (event.target === modal) {
+      closeModal();
+    }
   }
 
   loadVoitures();
