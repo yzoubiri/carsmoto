@@ -1,49 +1,3 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>Auto & Moto Passion</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f4; }
-    header { background: #000; color: #fff; padding: 15px; text-align: center; }
-    h1 { margin: 0; color: #e10600; }
-    .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; padding: 20px; }
-    .card { background: #fff; border-radius: 10px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-    .card h3 { margin: 0; color: #e10600; }
-    .card p { margin: 5px 0; }
-    form { max-width: 400px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-    form input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
-    form button { background: #e10600; color: #fff; padding: 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-    .notification { max-width: 400px; margin: 10px auto; padding: 15px; border-radius: 5px; text-align: center; font-weight: bold; }
-    .success { background: #4CAF50; color: #fff; }
-    .error { background: #f44336; color: #fff; }
-  </style>
-</head>
-<body>
-
-<header>
-  <h1>Auto & Moto Passion</h1>
-</header>
-
-<section>
-  <h2 style="text-align:center;color:#e10600;">Nos Voitures</h2>
-  <div id="gallery" class="gallery">
-    <!-- Les voitures seront injectées ici -->
-  </div>
-</section>
-
-<section>
-  <h2 style="text-align:center;color:#e10600;">Ajouter une voiture</h2>
-  <form id="voitureForm">
-    <input type="text" id="marque" placeholder="Marque" required>
-    <input type="text" id="modele" placeholder="Modèle" required>
-    <input type="number" id="annee" placeholder="Année" required>
-    <button type="submit">Ajouter</button>
-  </form>
-  <div id="notification"></div>
-</section>
-
 <script>
   const API_URL = "https://carsmoto-bo-c6ahhwejctesb0b7.westeurope-01.azurewebsites.net/api/voitures";
 
@@ -62,11 +16,60 @@
           <h3>${v.marque} ${v.modele}</h3>
           <p>Année : ${v.annee}</p>
           <p>ID : ${v.id}</p>
+          <button onclick="deleteVoiture(${v.id})">Supprimer</button>
+          <button onclick="showEditForm(${v.id}, '${v.marque}', '${v.modele}', ${v.annee})">Modifier</button>
+          <div id="edit-${v.id}" style="display:none; margin-top:10px;">
+            <input type="text" id="edit-marque-${v.id}" value="${v.marque}">
+            <input type="text" id="edit-modele-${v.id}" value="${v.modele}">
+            <input type="number" id="edit-annee-${v.id}" value="${v.annee}">
+            <button onclick="updateVoiture(${v.id})">Enregistrer</button>
+          </div>
         `;
         gallery.appendChild(card);
       });
     } catch (error) {
       showNotification("Erreur lors du chargement des voitures", "error");
+    }
+  }
+
+  function showEditForm(id, marque, modele, annee) {
+    document.getElementById(`edit-${id}`).style.display = "block";
+  }
+
+  async function updateVoiture(id) {
+    const marque = document.getElementById(`edit-marque-${id}`).value;
+    const modele = document.getElementById(`edit-modele-${id}`).value;
+    const annee = document.getElementById(`edit-annee-${id}`).value;
+
+    try {
+      const response = await fetch(`${API_URL}/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ marque, modele, annee })
+      });
+
+      if (response.ok) {
+        showNotification("Voiture mise à jour ✅", "success");
+        loadVoitures();
+      } else {
+        showNotification("Erreur lors de la mise à jour ❌", "error");
+      }
+    } catch (error) {
+      showNotification("Erreur réseau ❌", "error");
+    }
+  }
+
+  async function deleteVoiture(id) {
+    try {
+      const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+      if (response.ok) {
+        showNotification("Voiture supprimée ✅", "success");
+        loadVoitures();
+      } else {
+        showNotification("Erreur lors de la suppression ❌", "error");
+      }
+    } catch (error) {
+      showNotification("Erreur réseau ❌", "error");
     }
   }
 
@@ -77,37 +80,8 @@
     setTimeout(() => {
       notif.textContent = "";
       notif.className = "";
-    }, 4000); // disparaît après 4 secondes
+    }, 4000);
   }
-
-  document.getElementById("voitureForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const marque = document.getElementById("marque").value;
-    const modele = document.getElementById("modele").value;
-    const annee = document.getElementById("annee").value;
-
-    try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ marque, modele, annee })
-      });
-
-      if (response.ok) {
-        showNotification("Voiture ajoutée avec succès ✅", "success");
-        loadVoitures();
-        document.getElementById("voitureForm").reset();
-      } else {
-        showNotification("Erreur lors de l'ajout ❌", "error");
-      }
-    } catch (error) {
-      showNotification("Erreur réseau ❌", "error");
-    }
-  });
 
   loadVoitures();
 </script>
-
-</body>
-</html>
