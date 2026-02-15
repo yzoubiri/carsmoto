@@ -75,7 +75,7 @@
 
   function showNotification(message, type) {
     const notif = document.getElementById("notification");
-    notif.className = `notification ${type}`;
+    
     notif.textContent = message;
     setTimeout(() => {
       notif.textContent = "";
