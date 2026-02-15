@@ -100,7 +100,6 @@
 <div id="notifModal" class="modal">
   <div class="modal-content" id="notifContent"></div>
 </div>
-
 <script>
   const API_URL = "https://carsmoto-bo-c6ahhwejctesb0b7.westeurope-01.azurewebsites.net/api/voitures";
   let currentEditId = null;
@@ -133,6 +132,21 @@
     }
   }
 
+  // --- Suppression ---
+  async function deleteVoiture(id) {
+    try {
+      const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+      if (response.ok) {
+        showNotification("Voiture supprimée ✅", "success");
+        loadVoitures();
+      } else {
+        showNotification("Erreur lors de la suppression ❌", "error");
+      }
+    } catch (error) {
+      showNotification("Erreur réseau ❌", "error");
+    }
+  }
+
   // --- Ajout ---
   function openAddModal() { document.getElementById("addModal").style.display = "block"; }
   function closeAddModal() { document.getElementById("addModal").style.display = "none"; }
@@ -156,9 +170,43 @@
       } else {
         showNotification("Erreur lors de l'ajout ❌", "error");
       }
-    } catch  (error) {
-		
-	    showNotification("Erreur réseau ❌", "error");
+    } catch (error) {
+      showNotification("Erreur réseau ❌", "error");
+    }
+  }
+
+  // --- Modification ---
+  function openModal(id, marque, modele, annee, image) {
+    currentEditId = id;
+    document.getElementById("edit-marque").value = marque;
+    document.getElementById("edit-modele").value = modele;
+    document.getElementById("edit-annee").value = annee;
+    document.getElementById("edit-image").value = image;
+    document.getElementById("editModal").style.display = "block";
+  }
+  function closeModal() { document.getElementById("editModal").style.display = "none"; }
+  async function saveEdit() {
+    const marque = document.getElementById("edit-marque").value;
+    const modele = document.getElementById("edit-modele").value;
+    const annee = document.getElementById("edit-annee").value;
+    const image = document.getElementById("edit-image").value;
+
+    try {
+      const response = await fetch(`${API_URL}/${currentEditId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ marque, modele, annee, image })
+      });
+
+      if (response.ok) {
+        showNotification("Voiture mise à jour ✅", "success");
+        closeModal();
+        loadVoitures();
+      } else {
+        showNotification("Erreur lors de la mise à jour ❌", "error");
+      }
+    } catch (error) {
+      showNotification("Erreur réseau ❌", "error");
     }
   }
 
@@ -200,6 +248,7 @@
   // Charger la galerie au démarrage
   loadVoitures();
 </script>
+
 
 </body>
 </html>
