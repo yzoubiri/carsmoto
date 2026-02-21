@@ -101,36 +101,29 @@
   <div class="modal-content" id="notifContent"></div>
 </div>
 <script>
-  const API_URL = "https://carsmoto-bo-c6ahhwejctesb0b7.westeurope-01.azurewebsites.net/api/voitures";
-  let currentEditId = null;
+  const API_URL = "https://younesfunction-e0e2hkbeb7dsfvfs.canadacentral-01.azurewebsites.net/api/mission-001?code=8qG9ShjsiaWCWFQ_TUlnYHWbZnlzyRuJ53XMF_-bX8iWAzFuR3CwFw==";
 
-  async function loadVoitures() {
-    try {
-      const response = await fetch(API_URL);
-      const voitures = await response.json();
+async function loadVoitures() {
+  const response = await fetch(API_URL);
+  const data = await response.json();
+  const voitures = data.items || data;
 
-      const gallery = document.getElementById("gallery");
-      gallery.innerHTML = "";
+  const gallery = document.getElementById("gallery");
+  gallery.innerHTML = "";
 
-      voitures.forEach(v => {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML = `
-          <h3>${v.marque} ${v.modele}</h3>
-          <p>Année : ${v.annee}</p>
-          <p>ID : ${v.id}</p>
-          <img src="${v.image}" alt="${v.marque}" onclick="openImageModal('${v.image}')">
-          <div class="actions">
-            <button class="delete" onclick="deleteVoiture(${v.id})">Supprimer</button>
-            <button class="edit" onclick="openModal(${v.id}, '${v.marque}', '${v.modele}', ${v.annee}, '${v.image}')">Modifier</button>
-          </div>
-        `;
-        gallery.appendChild(card);
-      });
-    } catch (error) {
-      showNotification("Erreur lors du chargement des voitures", "error");
-    }
-  }
+  voitures.forEach(v => {
+    gallery.innerHTML += `
+      <div class="card">
+        <h3>${v.marque} ${v.modele}</h3>
+        <p>Année : ${v.annee}</p>
+        <p>ID : ${v.id}</p>
+        <img src="${v.image}" alt="${v.marque}">
+      </div>
+    `;
+  });
+}
+
+loadVoitures();
 
   // --- Suppression ---
   async function deleteVoiture(id) {
