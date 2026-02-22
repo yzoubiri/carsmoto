@@ -4,43 +4,56 @@
   <meta charset="UTF-8">
   <title>Auto & Moto Passion</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f9f9f9; color: #333; }
     header { background: linear-gradient(90deg, #000, #e10600); color: #fff; padding: 20px; text-align: center; }
     h1 { margin: 0; font-size: 2rem; letter-spacing: 2px; }
-    h2 { color: #e10600; margin-top: 20px; }
+    h2 { color: #e10600; margin-top: 20px; text-align:center; }
 
     .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; padding: 30px; }
-    .card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s; }
-    .card:hover { transform: translateY(-5px); }
-    .card h3 { margin: 0; color: #e10600; font-size: 1.2rem; }
-    .card p { margin: 5px 0; }
-    .card img { width: 100px; height: auto; border-radius: 6px; cursor: pointer; margin: 10px 0; display:block; }
+    .card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .card h3 { margin: 0; color: #e10600; }
+    .card img { width: 100px; border-radius: 6px; margin: 10px 0; }
 
-    .card .actions { display: flex; justify-content: space-between; margin-top: 10px; }
-    .card button { flex: 1; margin: 5px; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background 0.3s; }
-    .card button.delete { background: #f44336; color: #fff; }
-    .card button.delete:hover { background: #d32f2f; }
-    .card button.edit { background: #2196F3; color: #fff; }
-    .card button.edit:hover { background: #1976D2; }
+    button { padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
 
-    /* Popup modal générique */
-    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto;
+    /* Contact section */
+    .contact-section {
+      background: #fff;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    }
+
+    .contact-section input,
+    .contact-section textarea,
+    .contact-section select {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .contact-section button {
+      background: #e10600;
+      color: #fff;
+      width: 100%;
+    }
+
+    .contact-section button:hover {
+      background: #b00000;
+    }
+
+    /* Notifications */
+    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
              background-color: rgba(0,0,0,0.6); }
-    .modal-content { background-color: #fff; margin: 10% auto; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; box-shadow: 0 6px 15px rgba(0,0,0,0.3); }
-    .modal-content h2 { margin-top: 0; color: #e10600; }
-    .modal-content input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; }
-    .modal-content button { background: #e10600; color: #fff; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
-    .modal-content button:hover { background: #b00000; }
-    .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
-    .close:hover { color: #000; }
+    .modal-content { background-color: #fff; margin: 15% auto; padding: 25px; border-radius: 12px;
+                     width: 90%; max-width: 400px; text-align:center; }
 
-    /* Popup image */
-    #imageModal .modal-content { max-width: 800px; }
-    #imageModal img { width: 100%; border-radius: 8px; }
-
-    /* Popup notification */
-    #notifModal .modal-content { text-align: center; }
     #notifModal.success .modal-content { background: #4CAF50; color: #fff; }
     #notifModal.error .modal-content { background: #f44336; color: #fff; }
   </style>
@@ -51,197 +64,144 @@
   <h1>Auto & Moto Passion</h1>
 </header>
 
-<section>
-  <h2 style="text-align:center;">Nos Voitures</h2>
-  <div id="gallery" class="gallery"></div>
-</section>
+<h2>Nos Voitures</h2>
+<div id="gallery" class="gallery"></div>
 
-<section style="text-align:center;">
-  <button onclick="openAddModal()" style="background:#e10600;color:#fff;padding:12px 20px;border:none;border-radius:6px;cursor:pointer;font-weight:bold;">
-    + Ajouter une voiture
-  </button>
-</section>
+<!-- ================= CONTACT SECTION ================= -->
+<div class="contact-section">
+  <h2>Contactez-nous</h2>
 
-<!-- Popup modal pour ajout -->
-<div id="addModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeAddModal()">&times;</span>
-    <h2>Ajouter une voiture</h2>
-    <input type="text" id="marque" placeholder="Marque" required>
-    <input type="text" id="modele" placeholder="Modèle" required>
-    <input type="number" id="annee" placeholder="Année" required>
-    <input type="url" id="image" placeholder="URL de l'image" required>
-    <button onclick="saveAdd()">Ajouter</button>
-  </div>
+  <input type="text" id="contact-nom" placeholder="Votre nom" required>
+  <input type="email" id="contact-email" placeholder="Votre email" required>
+  <input type="text" id="contact-subject" placeholder="Sujet" required>
+
+  <select id="contact-criticity" required>
+    <option value="">-- Criticité --</option>
+    <option value="Low">Low</option>
+    <option value="Medium">Medium</option>
+    <option value="High">High</option>
+    <option value="Critical">Critical</option>
+  </select>
+
+  <textarea id="contact-message" rows="4" placeholder="Votre message..." required></textarea>
+
+  <button onclick="sendContact()">Envoyer</button>
 </div>
 
-<!-- Popup modal pour modification -->
-<div id="editModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <h2>Modifier la voiture</h2>
-    <input type="text" id="edit-marque" placeholder="Marque">
-    <input type="text" id="edit-modele" placeholder="Modèle">
-    <input type="number" id="edit-annee" placeholder="Année">
-    <input type="url" id="edit-image" placeholder="URL de l'image">
-    <button onclick="saveEdit()">Enregistrer</button>
-  </div>
-</div>
-
-<!-- Popup modal pour afficher image en grand -->
-<div id="imageModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeImageModal()">&times;</span>
-    <img id="fullImage" src="" alt="Voiture">
-  </div>
-</div>
-
-<!-- Popup modal pour notifications -->
+<!-- Notification -->
 <div id="notifModal" class="modal">
   <div class="modal-content" id="notifContent"></div>
 </div>
+
 <script>
-  const API_URL = "https://younesfunction-e0e2hkbeb7dsfvfs.canadacentral-01.azurewebsites.net/api/mission-001?code=8qG9ShjsiaWCWFQ_TUlnYHWbZnlzyRuJ53XMF_-bX8iWAzFuR3CwFw==";
 
+const API_URL = "https://younesfunction-e0e2hkbeb7dsfvfs.canadacentral-01.azurewebsites.net/api/mission-001?code=8qG9ShjsiaWCWFQ_TUlnYHWbZnlzyRuJ53XMF_-bX8iWAzFuR3CwFw==";
+
+const CONTACT_URL = "https://prod-66.westeurope.logic.azure.com:443/workflows/6ab8781dea8d431b8b11be6ed8501ea2/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=-nnNEHVf5Ziz9Zl_wwRDIS3XOoQPF1S5ONAsjnQxtPA";
+
+
+// ================= LOAD VOITURES =================
 async function loadVoitures() {
-  const response = await fetch(API_URL);
-  const data = await response.json();
-  const voitures = data.items || data;
+  try {
+    const response = await fetch(API_URL);
+    const data = await response.json();
+    const voitures = data.items || data;
 
-  const gallery = document.getElementById("gallery");
-  gallery.innerHTML = "";
+    const gallery = document.getElementById("gallery");
+    gallery.innerHTML = "";
 
-  voitures.forEach(v => {
-    gallery.innerHTML += `
-      <div class="card">
-        <h3>${v.marque} ${v.modele}</h3>
-        <p>Année : ${v.annee}</p>
-        <p>ID : ${v.id}</p>
-        <img src="${v.image}" alt="${v.marque}">
-      </div>
-    `;
-  });
+    voitures.forEach(v => {
+      gallery.innerHTML += `
+        <div class="card">
+          <h3>${v.marque} ${v.modele}</h3>
+          <p>Année : ${v.annee}</p>
+          <img src="${v.image}" alt="${v.marque}">
+        </div>
+      `;
+    });
+  } catch (error) {
+    showNotification("Erreur lors du chargement des voitures", "error");
+  }
 }
+
+
+// ================= SEND CONTACT =================
+async function sendContact() {
+
+  const nom = document.getElementById("contact-nom").value;
+  const email = document.getElementById("contact-email").value;
+  const subject = document.getElementById("contact-subject").value;
+  const criticity = document.getElementById("contact-criticity").value;
+  const message = document.getElementById("contact-message").value;
+
+  if (!nom || !email || !subject || !criticity || !message) {
+    showNotification("Tous les champs sont obligatoires ❌", "error");
+    return;
+  }
+
+  const payload = {
+    nom: nom,
+    email: email,
+    message: message,
+    criticity: criticity,
+    subject: subject
+  };
+
+  try {
+    const response = await fetch(CONTACT_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (response.ok) {
+      showNotification("Message envoyé avec succès ✅", "success");
+
+      // reset form
+      document.getElementById("contact-nom").value = "";
+      document.getElementById("contact-email").value = "";
+      document.getElementById("contact-subject").value = "";
+      document.getElementById("contact-criticity").value = "";
+      document.getElementById("contact-message").value = "";
+
+    } else {
+      showNotification("Erreur lors de l'envoi ❌", "error");
+    }
+
+  } catch (error) {
+    showNotification("Erreur réseau ❌", "error");
+  }
+}
+
+
+// ================= NOTIFICATION =================
+function showNotification(message, type) {
+  const notifModal = document.getElementById("notifModal");
+  const notifContent = document.getElementById("notifContent");
+
+  notifContent.textContent = message;
+  notifModal.className = `modal ${type}`;
+  notifModal.style.display = "block";
+
+  setTimeout(() => {
+    notifModal.style.display = "none";
+    notifModal.className = "modal";
+    notifContent.textContent = "";
+  }, 3000);
+}
+
+window.onclick = function(event) {
+  const notifModal = document.getElementById("notifModal");
+  if (event.target === notifModal) {
+    notifModal.style.display = "none";
+  }
+};
 
 loadVoitures();
 
-  // --- Suppression ---
-  async function deleteVoiture(id) {
-    try {
-      const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-      if (response.ok) {
-        showNotification("Voiture supprimée ✅", "success");
-        loadVoitures();
-      } else {
-        showNotification("Erreur lors de la suppression ❌", "error");
-      }
-    } catch (error) {
-      showNotification("Erreur réseau ❌", "error");
-    }
-  }
-
-  // --- Ajout ---
-  function openAddModal() { document.getElementById("addModal").style.display = "block"; }
-  function closeAddModal() { document.getElementById("addModal").style.display = "none"; }
-  async function saveAdd() {
-    const marque = document.getElementById("marque").value;
-    const modele = document.getElementById("modele").value;
-    const annee = document.getElementById("annee").value;
-    const image = document.getElementById("image").value;
-
-    try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ marque, modele, annee, image })
-      });
-
-      if (response.ok) {
-        showNotification("Voiture ajoutée avec succès ✅", "success");
-        closeAddModal();
-        loadVoitures();
-      } else {
-        showNotification("Erreur lors de l'ajout ❌", "error");
-      }
-    } catch (error) {
-      showNotification("Erreur réseau ❌", "error");
-    }
-  }
-
-  // --- Modification ---
-  function openModal(id, marque, modele, annee, image) {
-    currentEditId = id;
-    document.getElementById("edit-marque").value = marque;
-    document.getElementById("edit-modele").value = modele;
-    document.getElementById("edit-annee").value = annee;
-    document.getElementById("edit-image").value = image;
-    document.getElementById("editModal").style.display = "block";
-  }
-  function closeModal() { document.getElementById("editModal").style.display = "none"; }
-  async function saveEdit() {
-    const marque = document.getElementById("edit-marque").value;
-    const modele = document.getElementById("edit-modele").value;
-    const annee = document.getElementById("edit-annee").value;
-    const image = document.getElementById("edit-image").value;
-
-    try {
-      const response = await fetch(`${API_URL}/${currentEditId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ marque, modele, annee, image })
-      });
-
-      if (response.ok) {
-        showNotification("Voiture mise à jour ✅", "success");
-        closeModal();
-        loadVoitures();
-      } else {
-        showNotification("Erreur lors de la mise à jour ❌", "error");
-      }
-    } catch (error) {
-      showNotification("Erreur réseau ❌", "error");
-    }
-  }
-
-  // --- Popup image ---
-  function openImageModal(url) {
-    document.getElementById("fullImage").src = url;
-    document.getElementById("imageModal").style.display = "block";
-  }
-  function closeImageModal() {
-    document.getElementById("imageModal").style.display = "none";
-  }
-
-  // --- Notifications en popup ---
-  function showNotification(message, type) {
-    const notifModal = document.getElementById("notifModal");
-    const notifContent = document.getElementById("notifContent");
-    notifContent.textContent = message;
-    notifModal.className = `modal ${type}`;
-    notifModal.style.display = "block";
-    setTimeout(() => {
-      notifModal.style.display = "none";
-      notifModal.className = "modal";
-      notifContent.textContent = "";
-    }, 3000);
-  }
-
-  // Fermer les modals si on clique en dehors
-  window.onclick = function(event) {
-    const addModal = document.getElementById("addModal");
-    const editModal = document.getElementById("editModal");
-    const imageModal = document.getElementById("imageModal");
-    const notifModal = document.getElementById("notifModal");
-    if (event.target === addModal) closeAddModal();
-    if (event.target === editModal) closeModal();
-    if (event.target === imageModal) closeImageModal();
-    if (event.target === notifModal) notifModal.style.display = "none";
-  }
-
-  // Charger la galerie au démarrage
-  loadVoitures();
 </script>
-
 
 </body>
 </html>
